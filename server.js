@@ -33,6 +33,7 @@ const studentSchema = new mongoose.Schema({
     ref: 'Mentor',
   },
   mentorName: String,
+  mentorId:String,
 });
 
 const Mentor = mongoose.model('Mentor', mentorSchema);
@@ -101,7 +102,7 @@ app.put('/students/:studentId/assign-mentor', async (req, res) => {
     // Assign the mentor to the student
     const student = await Student.findOneAndUpdate({ _id: studentId }, { mentor: mentorId, mentorName: mentorName }, { new: true });
 
-    res.json(student);
+    res.status(200).json(student);
   } catch (error) {
     console.error('Error assigning Mentor to Student:', error);
     res.status(500).send('Error assigning Mentor to Student');
@@ -121,7 +122,7 @@ app.post('/students/:studentId/assign-mentor', async (req, res) => {
       { new: true }
     );
 
-    res.json(student);
+    res.status(200).json(student);
   } catch (error) {
     console.error('Error assigning Mentor to Student:', error);
     res.status(500).send('Error assigning Mentor to Student');
@@ -139,7 +140,7 @@ app.put('/students/:studentId/change-mentor', async (req, res) => {
     // Assign or change the mentor for the student
     const student = await Student.findByIdAndUpdate(studentId, { mentor: mentorId }, { new: true });
 
-    res.json(student);
+    res.status(200).json(student);
   } catch (error) {
     console.error('Error assigning/changing Mentor for Student:', error);
     res.status(500).send('Error assigning/changing Mentor for Student');
@@ -154,7 +155,7 @@ app.get('/mentors/:mentorId/students', async (req, res) => {
     // Find all students assigned to the mentor
     const students = await Student.find({ mentor: mentorId });
 
-    res.json(students);
+    res.status(200).json(students);
   } catch (error) {
     console.error('Error retrieving students for Mentor:', error);
     res.status(500).send('Error retrieving students for Mentor');
@@ -169,7 +170,7 @@ app.get('/students/:studentId/previous-mentor', async (req, res) => {
     // Find the student and populate the mentor field
     const student = await Student.findById(studentId).populate('mentor');
 
-    res.json(student.mentor);
+    res.status(200).json(student.mentor);
   } catch (error) {
     console.error('Error retrieving previous Mentor for Student:', error);
     res.status(500).send('Error retrieving previous Mentor for Student');
@@ -205,7 +206,7 @@ app.get('/mentors/new', (req, res) => {
 app.get('/mentors', async (req, res) => {
   try {
     const mentors = await Mentor.find();
-    res.json(mentors);
+    res.status(201).json(mentors);
   } catch (error) {
     console.error('Error retrieving mentors:', error);
     res.status(500).send('Error retrieving mentors');
@@ -241,7 +242,7 @@ app.get('/students/new', (req, res) => {
 app.get('/students', async (req, res) => {
   try {
     const students = await Student.find();
-    res.json(students);
+    res.status(201).json(students);
   } catch (error) {
     console.error('Error retrieving students:', error);
     res.status(500).send('Error retrieving students');
@@ -398,5 +399,5 @@ app.put('/students/:studentId/change-mentor', async (req, res) => {
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
